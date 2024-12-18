@@ -6,6 +6,10 @@ import aiogram.types as aiogram_types
 
 from settings import DEFAULT_LANGUAGE
 
+from utils.chat import ChatModel
+
+from traffic.bot import trafficbot
+
 
 class BaseModel:
 
@@ -14,7 +18,7 @@ class BaseModel:
         return markdown_decoration.quote(string)
 
 
-class TelegramUserModel(BaseModel, aiogram_types.User):
+class TelegramUserModel(BaseModel, ChatModel, aiogram_types.User):
     model_config = ConfigDict(
         use_enum_values=True,
         extra="ignore",
@@ -24,14 +28,22 @@ class TelegramUserModel(BaseModel, aiogram_types.User):
         defer_build=True,
     )
 
-    selected_language: str
+    selected_language: str | None = None
     blocked: bool = False
 
     @property
+    def chat_id(self):
+        return self.id
+    
+    @property
+    def bot(self):
+        return trafficbot
+
+    @property
     def language(self):
-        if self.language_code is None:
+        if self.selected_language is None:
             return DEFAULT_LANGUAGE
-        return self.language_code
+        return self.selected_language
 
     @property
     def premium(self):

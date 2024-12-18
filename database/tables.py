@@ -2,7 +2,7 @@ from .manager import TableManager
 from .models import *
 from .bases import *
 
-from exc import UserBlocked
+from utils.exc import UserBlocked
 
 import sqlmodel as _sql
 import typing as _t
